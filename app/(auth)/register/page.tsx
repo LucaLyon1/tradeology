@@ -1,6 +1,6 @@
 function page() {
     return (
-        <div>Register zebi</div>
+        <div>Register test</div>
     )
 }
 
