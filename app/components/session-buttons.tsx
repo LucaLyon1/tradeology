@@ -15,6 +15,7 @@ function SessionButtons({ session }: { session: Session | null }) {
     return session ? (
         <>
             <Link href='/canvas'>Strategy Builder</Link>
+            <Link href='/account'>Account</Link>
             <button onClick={handleSignout}>Log out</button>
         </>
     ) : (
