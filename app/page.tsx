@@ -1,7 +1,10 @@
-import Image from "next/image";
+import Chart from "./components/Chart";
 
 export default function Home() {
+
   return (
-    <main>Hello world</main>
+    <main>Hello world
+      <Chart />
+    </main>
   );
 }
