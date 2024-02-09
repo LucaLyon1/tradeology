@@ -4,7 +4,7 @@ import { createChart } from "lightweight-charts";
 import { CandlestickData } from "lightweight-charts";
 import { fetchData } from "@/lib/fetchData";
 
-function Chart() {
+function Chart({ symbol }: { symbol: String }) {
     const chartRef = useRef<HTMLDivElement>(null);
     const [chartData, setChartData] = useState<Array<CandlestickData>>([])
     useEffect(() => {
@@ -12,7 +12,7 @@ function Chart() {
         if (!chartRef.current) return
 
         const getData = async () => {
-            setChartData(await fetchData("IBM"))
+            setChartData(await fetchData(symbol))
         }
         if (chartData.length == 0) {
             getData();

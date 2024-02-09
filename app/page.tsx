@@ -4,7 +4,7 @@ export default function Home() {
 
   return (
     <main>Hello world
-      <Chart />
+      <Chart symbol="AAPL" />
     </main>
   );
 }
