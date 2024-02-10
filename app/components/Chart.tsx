@@ -27,7 +27,7 @@ function Chart({ symbol }: { symbol: String }) {
         }
     }, [chartData])
     return (
-        <div className="w-full flex items-center justify-center">
+        <div>
             <div className="w-2/3" ref={chartRef}>Chart</div>
         </div>
     )
