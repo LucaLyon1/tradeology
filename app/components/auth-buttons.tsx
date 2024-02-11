@@ -6,7 +6,6 @@ async function AuthButtons() {
     const supabase = createServerComponentClient({ cookies })
 
     const { data: { session } } = await supabase.auth.getSession()
-
     return (
         <SessionButtons session={session} />
     )

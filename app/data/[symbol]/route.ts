@@ -12,3 +12,4 @@ export async function GET(req: NextRequest, { params }: { params: { symbol: Stri
     return Response.json({ data })
 
 }
+

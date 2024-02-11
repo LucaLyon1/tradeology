@@ -14,6 +14,7 @@ function SessionButtons({ session }: { session: Session | null }) {
     }
     return session ? (
         <>
+            <Link href='/chart/AAPL'>Chart</Link>
             <Link href='/canvas'>Strategy Builder</Link>
             <Link href='/account'>Account</Link>
             <button onClick={handleSignout}>Log out</button>
