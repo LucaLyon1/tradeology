@@ -1,0 +1,22 @@
+## Trading Flow roadmap 
+
+- [ ] Sidebar with every type of code element 
+    - [🚧] Control flow blocks
+    - [ ] Operators
+    - [ ] Data Structures (including variable and amount for orde size)
+    - [ ] Orders (buy/sell)
+- [ ] Canvas with UI for every type of code element
+    - [ ] UI for each element
+    - [ ] Hover effect on each element (to show how to link them)
+    - [ ] Arrows between elements
+    - [ ] Object that keeps track of the elements on canvas and their links
+- [ ] Bring datasets in (stock prices)
+- [ ] Chosing the timeframe for the execution
+- [ ] Run button to back test trading algorithm on datas
+    - [ ] Compiler of every block on the canvas how they are related
+    - [ ] Creation of the code for the algorithm
+    - [ ] Running the code on datas
+- [ ] Saving the strategy
+    - [ ] Thinking of a data model to store in PostgreSQL (look for how to store Graph in SQL)
+- [ ] Dashboard to see the strategy performance on the given timeframe
+- [ ] Social card to share the strategy on social media
