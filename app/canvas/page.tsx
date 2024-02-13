@@ -1,22 +1,37 @@
-import React from 'react'
+'use client'
+
+import React, { useState } from 'react'
 import Sidebar from '../components/sidebar'
+import { Blocks } from '@/types';
+
+const haveKey = () => {
+    return
+}
 
 function Canvas() {
+    const [blocks, setBlocks] = useState<Array<Blocks>>([]);
+    const addBlock = (newBlock: Blocks) => {
+        setBlocks([...blocks, newBlock]);
+        console.log(blocks);
+    }
     return (
         <div className='flex'>
             <div className='basis-1/4'>
-                <Sidebar />
+                <Sidebar addBlock={addBlock} />
             </div>
-            <div className='w-52 h-52
-        bg-blue-400 
-        cursor-pointer 
-        flex 
-        justify-center 
-        items-center
-        rounded-lg
-        basis-3/4'>
-                You are on the canvas !!
-            </div>
+            {blocks.map((block, id) => (
+                <div className='rounded-md
+                text-white
+                flex
+                w-48 
+                h-48 
+                bg-blue-400
+                items-center
+                justify-center'
+                    key={id}>
+                    Block {Blocks[block]}
+                </div>
+            ))}
         </div>
     )
 }

@@ -1,5 +1,5 @@
 import Link from "next/link"
-import AuthButtons from "./auth-buttons"
+import AuthButtons from "./AuthComponents/auth-buttons"
 
 function Navbar() {
 

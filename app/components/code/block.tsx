@@ -1,4 +1,10 @@
-export default function Block({ text, description }: { text: String, description: String }) {
+interface blockProps {
+    text: string,
+    description: string,
+    calling?: () => void,
+}
+
+export default function Block({ text, description, calling }: blockProps) {
     return (
         <div className="flex 
         flex-col 
@@ -11,7 +17,8 @@ export default function Block({ text, description }: { text: String, description
         border-2
         border-slate-200
         rounded-md
-        my-2">
+        my-2"
+        >
             <p className="text-2xl">{text}</p>
             <p className="text-center">{description}</p>
         </div>
