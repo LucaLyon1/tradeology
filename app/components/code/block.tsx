@@ -1,10 +1,9 @@
 interface blockProps {
     text: string,
     description: string,
-    calling?: () => void,
 }
 
-export default function Block({ text, description, calling }: blockProps) {
+export default function Block({ text, description }: blockProps) {
     return (
         <div className="flex 
         flex-col 

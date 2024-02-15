@@ -3,16 +3,12 @@
 import React, { useState } from 'react'
 import Sidebar from '../components/sidebar'
 import { Blocks } from '@/types';
-
-const haveKey = () => {
-    return
-}
+import UiBlock from '../components/ui-block';
 
 function Canvas() {
     const [blocks, setBlocks] = useState<Array<Blocks>>([]);
     const addBlock = (newBlock: Blocks) => {
         setBlocks([...blocks, newBlock]);
-        console.log(blocks);
     }
     return (
         <div className='flex'>
@@ -20,16 +16,19 @@ function Canvas() {
                 <Sidebar addBlock={addBlock} />
             </div>
             {blocks.map((block, id) => (
-                <div className='rounded-md
-                text-white
-                flex
-                w-48 
-                h-48 
+                <div className='
+                border-4
+                border-transparent
+                hover:border-green-500
+                rounded-md
                 bg-blue-400
-                items-center
-                justify-center'
-                    key={id}>
-                    Block {Blocks[block]}
+                cursor-pointer
+                mx-4
+                text-white
+                w-1/4
+                h-64
+                text-xl' key={id}>
+                    <UiBlock id={block} />
                 </div>
             ))}
         </div>
