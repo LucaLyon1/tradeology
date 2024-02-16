@@ -2,10 +2,11 @@ import { Blocks } from "@/types";
 import IfElseCanvas from "./canvas/control/IfElseCanvas";
 import ForCanvas from "./canvas/control/ForCanvas";
 import WhileCanvas from "./canvas/control/WhileCanvas";
+import BuyCanvas from "./canvas/order/BuyCanvas";
+import SellCanvas from "./canvas/order/SellCanvas";
 
 interface blockProps {
     id: Blocks,
-
 }
 
 export default function UiBlock({ id }: blockProps) {
@@ -27,12 +28,12 @@ export default function UiBlock({ id }: blockProps) {
         }
         case (Blocks.BuyOrder): {
             return (
-                <div>buy</div>
+                <BuyCanvas />
             )
         }
         case (Blocks.SellOrder): {
             return (
-                <div>sell</div>
+                <SellCanvas />
             )
         }
     }
