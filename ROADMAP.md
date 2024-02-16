@@ -7,6 +7,7 @@
     - [x] Orders (buy/sell)
 - [ ] Canvas with UI for every type of code element
     - [🚧] UI for each element
+    - [🚧] Moving element dynamically with the graph
     - [ ] Hover effect on each element (to show how to link them)
     - [ ] Arrows between elements
     - [ ] Object that keeps track of the elements on canvas and their links
