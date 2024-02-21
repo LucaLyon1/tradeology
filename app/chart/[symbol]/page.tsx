@@ -1,6 +1,6 @@
 'use client'
 
-import Chart from "@/app/components/Chart";
+import Chart from "@/components/Chart";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";

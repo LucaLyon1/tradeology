@@ -1,60 +1,44 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
-import Sidebar from '../components/sidebar'
-import { Blocks } from '@/types';
-import UiBlock from '../components/ui-block';
+import React, { useCallback, useState } from 'react'
+import ReactFlow, { useNodesState, useEdgesState, addEdge, Edge, Connection, Controls, Background, MiniMap } from 'reactflow';
+import 'reactflow/dist/style.css';
 
-interface BlockCoordinate {
-    id: number,
-    coordinate: [number, number]
-}
+const initialNodes = [
+    { id: '1', position: { x: 0, y: 0 }, data: { label: '1' } },
+];
+const initialEdges: Edge[] = [];
+
 
 function Canvas() {
-    const [blocks, setBlocks] = useState<Array<BlockCoordinate>>([]);
-    const [endTop, setEndTop] = useState<number>(276);
-    const addBlock = (newBlock: Blocks) => {
-        const newCoord: [number, number] = [50, 230];
-        blocks.forEach((b) => {
-            b.coordinate[1] += 128
-        })
-        setBlocks([...blocks, { id: newBlock, coordinate: newCoord }]);
-        setEndTop(endTop + 128);
+    const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+    const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+    const [count, setCount] = useState(2);
+
+    const onConnect = useCallback((params: Edge | Connection) =>
+        setEdges((eds) =>
+            addEdge(params, eds)),
+        [setEdges],)
+
+    const addNode = () => {
+        setNodes([...nodes, { id: count + "", position: { x: 0, y: 100 }, data: { label: count + "" } }]);
+        setCount(count + 1);
     }
-    useEffect(() => {
-        console.log(blocks);
-    }, [endTop])
 
     return (
-        <div className='grid grid-cols-4 gap-4 grid-rows-1 w-screen'>
-            <Sidebar addBlock={addBlock} />
-            <div className='col-span-3'>
-                <div className='absolute top-14 left-1/2 bg-green-300 w-48 h-16 text-white text-lg rounded-md flex justify-center items-center'>
-                    Beginning
-                </div>
-                <div className='absolute left-1/2 bg-green-300 w-48 h-16 text-white text-lg rounded-md flex justify-center items-center transition-all'
-                    style={{ top: endTop + 'px' }}>
-                    End
-                </div>
-                {blocks.map((block, id) => (
-                    <div className='absolute
-                        border-4
-                        border-transparent
-                        hover:border-black
-                        rounded-md
-                        bg-blue-400
-                        cursor-pointer
-                        text-white
-                        w-64
-                        transition-all'
-                        key={id}
-                        style={{ top: block.coordinate[1], left: block.coordinate[0] + '%' }}>
-                        <div className='flex flex-col gap-1'>
-                            <UiBlock id={block.id} />
-                        </div>
-                    </div>
-                ))}
-            </div>
+        <div style={{ width: '100vw', height: '100vh' }}>
+            <button onClick={addNode}>Add node</button>
+            <ReactFlow
+                nodes={nodes}
+                edges={edges}
+                onNodesChange={onNodesChange}
+                onEdgesChange={onEdgesChange}
+                onConnect={onConnect}
+            >
+                <Controls />
+                <MiniMap />
+                <Background variant="dots" gap={12} size={1} />
+            </ReactFlow>
         </div>
     )
 }

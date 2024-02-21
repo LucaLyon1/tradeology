@@ -1,4 +1,4 @@
-import Authform from "@/app/components/AuthComponents/Authform"
+import Authform from "@/components/AuthComponents/Authform"
 
 function page() {
     return (
