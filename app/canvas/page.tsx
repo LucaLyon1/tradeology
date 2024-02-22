@@ -1,13 +1,16 @@
 'use client'
 
+import IfElseNode from '@/components/canvas/control/IfElseNode';
 import React, { useCallback, useState } from 'react'
 import ReactFlow, { useNodesState, useEdgesState, addEdge, Edge, Connection, Controls, Background, MiniMap } from 'reactflow';
 import 'reactflow/dist/style.css';
 
 const initialNodes = [
-    { id: '1', position: { x: 0, y: 0 }, data: { label: '1' } },
+    { id: '1', type: 'ifElse', position: { x: 0, y: 0 }, data: { label: '1' } },
 ];
 const initialEdges: Edge[] = [];
+
+const nodeTypes = { ifElse: IfElseNode }
 
 
 function Canvas() {
@@ -34,6 +37,7 @@ function Canvas() {
                 onNodesChange={onNodesChange}
                 onEdgesChange={onEdgesChange}
                 onConnect={onConnect}
+                nodeTypes={nodeTypes}
             >
                 <Controls />
                 <MiniMap />
