@@ -2,8 +2,8 @@
 
 import IfElseNode from '@/components/canvas/control/IfElseNode';
 import React, { useCallback, useState } from 'react'
-import ReactFlow, { useNodesState, useEdgesState, addEdge, Edge, Connection, Controls, Background, MiniMap } from 'reactflow';
-import 'reactflow/dist/style.css';
+import { ReactFlow, useNodesState, useEdgesState, addEdge, Edge, Connection, Controls, Background, MiniMap, EdgeChange } from '@xyflow/react';
+import '@xyflow/react/dist/style.css';
 
 const initialNodes = [
     { id: '1', type: 'ifElse', position: { x: 0, y: 0 }, data: { label: '1' } },
@@ -23,8 +23,9 @@ function Canvas() {
             addEdge(params, eds)),
         [setEdges],)
 
+
     const addNode = () => {
-        setNodes([...nodes, { id: count + "", position: { x: 0, y: 100 }, data: { label: count + "" } }]);
+        setNodes([...nodes, { id: count + "", type: '', position: { x: 0, y: 100 }, data: { label: count + "" } }]);
         setCount(count + 1);
     }
 

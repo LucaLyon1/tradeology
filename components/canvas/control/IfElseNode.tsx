@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from "react";
-import { Handle, Position } from "reactflow";
+import { Connection, Handle, Position, useHandleConnections } from "@xyflow/react";
+import { useCallback, useEffect } from "react";
 
 const handleIf = { left: 25 + "%" }
 const handleElse = { left: 75 + "%" }
@@ -9,6 +9,20 @@ const handleElse = { left: 75 + "%" }
 
 
 export default function IfElseNode() {
+    const onConnect = () => {
+        console.log("connect");
+    }
+
+    const onDisconnect = () => {
+        console.log("disconnect");
+    }
+
+    const connections = useHandleConnections({
+        type: 'source',
+        id: 'if',
+        onConnect,
+        onDisconnect
+    });
 
     return (
         <div className="h-16 w-32 p-1 border border-gray-700 flex justify-center items-center rounded-md bg-white">
@@ -18,12 +32,7 @@ export default function IfElseNode() {
                 position={Position.Bottom}
                 id="if"
                 style={handleIf}
-            />
-            <Handle
-                type="source"
-                position={Position.Bottom}
-                id="else"
-                style={handleElse}
+                isConnectable={connections.length === 0}
             />
         </div>
     )
