@@ -2,15 +2,20 @@
 
 import IfElseNode from '@/components/canvas/control/IfElseNode';
 import React, { useCallback, useState } from 'react'
-import { ReactFlow, useNodesState, useEdgesState, addEdge, Edge, Connection, Controls, Background, MiniMap, EdgeChange } from '@xyflow/react';
+import { ReactFlow, useNodesState, useEdgesState, addEdge, Edge, Connection, Controls, Background, MiniMap, EdgeChange, BackgroundVariant } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
+import ForNode from '@/components/canvas/control/ForNode';
 
 const initialNodes = [
-    { id: '1', type: 'ifElse', position: { x: 0, y: 0 }, data: { label: '1' } },
+    { id: 'startnd', type: 'input', position: { x: 300, y: 100 }, data: { label: 'Start' } },
+    { id: 'endnd', type: 'output', position: { x: 300, y: 250 }, data: { label: 'End' } },
 ];
 const initialEdges: Edge[] = [];
 
-const nodeTypes = { ifElse: IfElseNode }
+const nodeTypes = {
+    ifElse: IfElseNode,
+    forLoop: ForNode,
+}
 
 
 function Canvas() {
@@ -24,14 +29,15 @@ function Canvas() {
         [setEdges],)
 
 
-    const addNode = () => {
-        setNodes([...nodes, { id: count + "", type: '', position: { x: 0, y: 100 }, data: { label: count + "" } }]);
+    const addNode = (type: string) => {
+        setNodes([...nodes, { id: count + "", type: type, position: { x: 0, y: 100 }, data: { label: "1" } }]);
         setCount(count + 1);
     }
 
     return (
         <div style={{ width: '100vw', height: '100vh' }}>
-            <button onClick={addNode}>Add node</button>
+            <button onClick={() => addNode('ifElse')}>Add if else node</button>
+            <button onClick={() => addNode('forLoop')}>Add for node</button>
             <ReactFlow
                 nodes={nodes}
                 edges={edges}
@@ -42,7 +48,7 @@ function Canvas() {
             >
                 <Controls />
                 <MiniMap />
-                <Background variant="dots" gap={12} size={1} />
+                <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
             </ReactFlow>
         </div>
     )

@@ -9,7 +9,7 @@ const handle = {
     backgroundColor: '#784be8',
 };
 
-const handleIf = {
+const handleLoop = {
     left: 25 + "%",
     width: "32px",
     height: "20px",
@@ -22,9 +22,9 @@ const handleIf = {
     fontSize: '12px'
 };
 
-const handleElse = {
+const handleOut = {
     left: 75 + "%",
-    width: "36px",
+    width: "38px",
     height: "20px",
     borderRadius: "5px",
     backgroundColor: '#784be8',
@@ -35,7 +35,7 @@ const handleElse = {
     fontSize: '12px'
 };
 
-export default function IfElseNode() {
+export default function ForNode() {
     const onConnect = () => {
         console.log("connect");
     }
@@ -53,33 +53,31 @@ export default function IfElseNode() {
 
     return (
         <div className="h-24 p-1 border border-gray-700 flex justify-center items-center rounded-md bg-white">
-            <p>If</p>
-            {/*TODO: select options should be defined by the parent*/}
-            <select name="statement" className="border">
-                <option value="MA">Moving Average</option>
-                <option value="MA">Moving Average</option>
-                <option value="MA">Moving Average</option>
+            <p>For e of</p>
+            {/*TODO: Loop should be an input taking an iterator*/}
+            <select>
+                <option value="iterator">iterator</option>
+                <option value="iterator">iterator</option>
+                <option value="iterator">iterator</option>
             </select>
             <Handle
                 type="target"
                 position={Position.Top}
-                id="iftgt"
                 style={handle}
             />
             <Handle
                 type="source"
                 position={Position.Bottom}
-                id="if"
-                style={handleIf}
-                isConnectable={connections.length === 0}>
+                id="loop"
+                style={handleLoop}>
                 Do
             </Handle>
             <Handle
                 type="source"
+                id="then"
                 position={Position.Bottom}
-                id="else"
-                style={handleElse}>
-                Else
+                style={handleOut}>
+                Then
             </Handle>
         </div>
     )
