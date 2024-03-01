@@ -1,12 +1,16 @@
 'use client'
 
-import IfElseNode from '@/components/canvas/control/IfElseNode';
 import React, { useCallback, useState } from 'react'
+
 import { ReactFlow, useNodesState, useEdgesState, addEdge, Edge, Connection, Controls, Background, MiniMap, EdgeChange, BackgroundVariant } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import ForNode from '@/components/canvas/control/ForNode';
-import PrintNode from '@/components/canvas/control/PrintNode'
+
 import ApiContext from '@/lib/apiContext';
+
+import ForNode from '@/components/canvas/control/ForNode';
+import IfElseNode from '@/components/canvas/control/IfElseNode';
+import PrintNode from '@/components/canvas/control/PrintNode'
+import generateAlgo from '@/lib/generateAlgo';
 
 const initialNodes = [
     { id: 'startnd', type: 'input', position: { x: 300, y: 100 }, data: { label: 'Start' } },
@@ -33,7 +37,7 @@ function Canvas() {
                 n.data = data;
             }
             return n
-        }),)
+        }))
     }
 
     let api = {
@@ -50,11 +54,36 @@ function Canvas() {
         setNodes([...nodes, { id: type + countId++, type: type, position: { x: 0, y: 100 }, data: { label: "1" } }]);
     }
 
+    const algoGen = async () => {
+        const data = {
+            nodes: nodes,
+            edges: edges
+        }
+        await generateAlgo(data)
+    }
+
     return (
         <div style={{ width: '100vw', height: '100vh', fontSize: '12px' }}>
-            <button onClick={() => addNode('ifElse')}>Add if else node</button>
-            <button onClick={() => addNode('forLoop')}>Add for node</button>
-            <button onClick={() => addNode('print')}>Add print node</button>
+            <button
+                className='text-white mx-2 rounded-md px-2 py-2 bg-green-500'
+                onClick={() => addNode('ifElse')}>
+                Add if else node
+            </button>
+            <button
+                className='text-white mx-2 rounded-md px-2 py-2 bg-green-500'
+                onClick={() => addNode('forLoop')}>
+                Add for node
+            </button>
+            <button
+                className='text-white mx-2 rounded-md px-2 py-2 bg-green-500'
+                onClick={() => addNode('print')}>
+                Add print node
+            </button>
+            <button
+                className='text-white mx-2 rounded-md px-2 py-2 bg-green-500'
+                onClick={algoGen}>
+                Generate algorithm
+            </button>
             <ApiContext.Provider value={api}>
                 <ReactFlow
                     nodes={nodes}
