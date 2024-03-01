@@ -11,6 +11,7 @@ import ForNode from '@/components/canvas/control/ForNode';
 import IfElseNode from '@/components/canvas/control/IfElseNode';
 import PrintNode from '@/components/canvas/control/PrintNode'
 import generateAlgo from '@/lib/generateAlgo';
+import EndNode from '@/components/canvas/control/EndNode';
 
 const initialNodes = [
     { id: 'startnd', type: 'input', position: { x: 300, y: 100 }, data: { label: 'Start' } },
@@ -22,6 +23,7 @@ const nodeTypes = {
     ifElse: IfElseNode,
     forLoop: ForNode,
     print: PrintNode,
+    endNode: EndNode,
 }
 
 let countId = 0;
@@ -64,6 +66,7 @@ function Canvas() {
 
     return (
         <div style={{ width: '100vw', height: '100vh', fontSize: '12px' }}>
+            {'TODO: externaliser dans un composant'}
             <button
                 className='text-white mx-2 rounded-md px-2 py-2 bg-green-500'
                 onClick={() => addNode('ifElse')}>
@@ -73,6 +76,11 @@ function Canvas() {
                 className='text-white mx-2 rounded-md px-2 py-2 bg-green-500'
                 onClick={() => addNode('forLoop')}>
                 Add for node
+            </button>
+            <button
+                className='text-white mx-2 rounded-md px-2 py-2 bg-green-500'
+                onClick={() => addNode('endNode')}>
+                Add End Of Block node
             </button>
             <button
                 className='text-white mx-2 rounded-md px-2 py-2 bg-green-500'

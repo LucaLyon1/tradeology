@@ -5,12 +5,14 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest, res: NextResponse) {
     const data: payload = await req.json();
     const { nodes, edges } = data;
-    const code = generateCode(nodes, edges)
+    const code = generateCode(nodes, edges);
+    console.log(code);
     console.log(eval(code));
     return Response.json({ data })
 
 }
 
+//TODO: il y a un undefined qui traine, il faut ajouter les noeuds, implémenter npm vm
 function generateCode(nodes: Node[], edges: Edge[]) {
     let code = "";
     const visitedNodes = new Set(); // Track visited nodes to avoid infinite loops
@@ -31,6 +33,8 @@ function generateCode(nodes: Node[], edges: Edge[]) {
             case "forLoop":
                 code += `for(let i=0;i<${currentNode.data.value};i++){\n`;
                 break;
+            case "endNode":
+                code += '};\n'
             case "print":
                 code += `console.log('${currentNode.data.value}');\n`
             case "output":
@@ -44,10 +48,6 @@ function generateCode(nodes: Node[], edges: Edge[]) {
         for (const edge of outgoingEdges) {
             const targetNode = nodes.find(n => n.id === edge.target);
             if (targetNode) navigateNode(targetNode);
-        }
-
-        if (currentNode.type === "forLoop") {
-            code += `};\n`; // Close the "if" block from the condition node
         }
     }
 
