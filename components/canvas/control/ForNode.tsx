@@ -1,6 +1,9 @@
 'use client'
 
-import { Handle, Position, useHandleConnections } from "@xyflow/react";
+import ApiContext from "@/lib/apiContext";
+import { apiInt } from "@/types";
+import { Handle, Position, useHandleConnections, useNodeId } from "@xyflow/react";
+import { useContext, useState } from "react";
 
 const handle = {
     width: "32px",
@@ -36,6 +39,10 @@ const handleOut = {
 };
 
 export default function ForNode() {
+    const api = useContext<apiInt>(ApiContext);
+    const id = useNodeId();
+    const [qty, setQty] = useState(1)
+
     const onConnect = () => {
         console.log("connect");
     }
@@ -51,15 +58,27 @@ export default function ForNode() {
         onDisconnect
     });
 
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = e.target.value
+        setQty(Number(newValue))
+        api.updateNodes(id, {
+            value: newValue
+        })
+    }
+
     return (
-        <div className="h-24 p-1 border border-gray-700 flex justify-center items-center rounded-md bg-white">
-            <p>For e of</p>
-            {/*TODO: Loop should be an input taking an iterator*/}
-            <select>
-                <option value="iterator">iterator</option>
-                <option value="iterator">iterator</option>
-                <option value="iterator">iterator</option>
-            </select>
+        <div className="h-20 p-1 border border-gray-700 flex justify-center items-center rounded-md bg-white">
+            <p>Repeat</p>
+            <input
+                className="ml-2 w-16"
+                type="number"
+                name="number"
+                id="number"
+                min={0}
+                onChange={handleChange}
+                value={qty}
+            />
+            <p> times</p>
             <Handle
                 type="target"
                 position={Position.Top}

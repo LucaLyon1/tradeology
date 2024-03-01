@@ -5,3 +5,7 @@ export enum Blocks {
     BuyOrder,
     SellOrder
 }
+
+export interface apiInt {
+    updateNodes: (nodeId: string | null, data: any) => void
+}
