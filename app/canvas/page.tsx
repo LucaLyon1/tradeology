@@ -59,14 +59,18 @@ function Canvas() {
     const algoGen = async () => {
         const data = {
             nodes: nodes,
-            edges: edges
+            edges: edges,
+            //TODO: add input fields
+            symbol: 'AAPL',
+            timeframe: { beg: new Date(2021, 1, 1), end: new Date() },
+            freq: '1D'
         }
         await generateAlgo(data)
     }
 
     return (
         <div style={{ width: '100vw', height: '100vh', fontSize: '12px' }}>
-            {'TODO: externaliser dans un composant'}
+            {/*TODO: externaliser dans un composant'*/}
             <button
                 className='text-white mx-2 rounded-md px-2 py-2 bg-green-500'
                 onClick={() => addNode('ifElse')}>

@@ -1,6 +1,6 @@
-import { Edge, Node } from "@xyflow/react"
+import { payload } from "@/types"
 
-export default async function generateAlgo(data: { nodes: Node[], edges: Edge[] }) {
+export default async function generateAlgo(data: payload) {
     try {
         const res = await fetch('http://localhost:3000/api/algorithm', {
             method: 'POST',
@@ -9,9 +9,9 @@ export default async function generateAlgo(data: { nodes: Node[], edges: Edge[] 
                 'content-type': 'application/json'
             }
         })
-        console.log(res)
         if (res.ok) {
-            console.log("Yeai!")
+            const { result } = await res.json();
+            console.log(result.print);
         } else {
             console.log("Oops! Something is wrong.")
         }

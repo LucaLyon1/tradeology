@@ -1,18 +1,17 @@
-import { payload } from "@/types";
+import { fetchData } from "@/lib/fetchData";
+import { payload, timeframe } from "@/types";
 import { Edge, Node } from "@xyflow/react";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest, res: NextResponse) {
     const data: payload = await req.json();
-    const { nodes, edges } = data;
+    const { nodes, edges, symbol, timeframe, freq } = data;
     const code = generateCode(nodes, edges);
-    console.log(code);
-    console.log(eval(code));
-    return Response.json({ data })
+    const results = executeCode(code, symbol, timeframe, freq)
+    return Response.json({ results })
 
 }
 
-//TODO: il y a un undefined qui traine, il faut ajouter les noeuds, implémenter npm vm
 function generateCode(nodes: Node[], edges: Edge[]) {
     let code = "";
     const visitedNodes = new Set(); // Track visited nodes to avoid infinite loops
@@ -26,18 +25,24 @@ function generateCode(nodes: Node[], edges: Edge[]) {
         }
         visitedNodes.add(currentNode.id);
 
-        code += `// Process node: ${currentNode.type}\n`;
+        //code += `// Process node: ${currentNode.type}\n`;
         switch (currentNode.type) {
             case "input":
+                code += "(function() {\n"
+                code += "var data={print:'',mean:20};\n"
                 break;
             case "forLoop":
                 code += `for(let i=0;i<${currentNode.data.value};i++){\n`;
                 break;
             case "endNode":
-                code += '};\n'
+                code += '};\n';
+                break;
             case "print":
-                code += `console.log('${currentNode.data.value}');\n`
+                code += `data.print+='${currentNode.data.value}\\n';\n`;
+                break;
             case "output":
+                code += 'return data;'
+                code += "})();"
                 break;
         }
 
@@ -55,4 +60,14 @@ function generateCode(nodes: Node[], edges: Edge[]) {
 
     // Add finishing touches (e.g., closing brackets, return statements)
     return code;
+}
+
+function executeCode(code: string, symbol: string, timeframe: timeframe, freq: string) {
+    //TODO: need to find the best way to apply the code to the dataset
+    //need to enforce that result is a function
+    //ideas: wrap user's code in a for loop, keep track of every indicator's value at every iteration
+    const data = fetchData(symbol);
+    const result = eval(code);
+
+    return result;
 }

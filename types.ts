@@ -14,5 +14,13 @@ export interface apiInt {
 
 export interface payload {
     nodes: Node[],
-    edges: Edge[]
+    edges: Edge[],
+    symbol: string,
+    timeframe: timeframe,
+    freq: string
+}
+
+export interface timeframe {
+    beg: Date,
+    end: Date
 }

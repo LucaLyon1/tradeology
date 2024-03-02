@@ -13,21 +13,8 @@ const handle = {
 };
 
 const handleLoop = {
-    left: 25 + "%",
+    left: 50 + "%",
     width: "32px",
-    height: "20px",
-    borderRadius: "5px",
-    backgroundColor: '#784be8',
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    color: "white",
-    fontSize: '12px'
-};
-
-const handleOut = {
-    left: 75 + "%",
-    width: "38px",
     height: "20px",
     borderRadius: "5px",
     backgroundColor: '#784be8',
@@ -90,13 +77,6 @@ export default function ForNode() {
                 id="loop"
                 style={handleLoop}>
                 Do
-            </Handle>
-            <Handle
-                type="source"
-                id="then"
-                position={Position.Bottom}
-                style={handleOut}>
-                Then
             </Handle>
         </div>
     )
