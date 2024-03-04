@@ -11,6 +11,7 @@
     - [x] Arrows between elements
     - [x] Object that keeps track of the elements on canvas and their links
 - [ ] Bring datasets in (stock prices)
+- [ ] *Milestone* creating a simple crossing Moving Average strategy
 - [ ] Chosing the timeframe for the execution
 - [ ] Run button to back test trading algorithm on datas
     - [🚧] Compiler of every block on the canvas how they are related
