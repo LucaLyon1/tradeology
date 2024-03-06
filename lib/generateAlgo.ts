@@ -10,8 +10,8 @@ export default async function generateAlgo(data: payload) {
             }
         })
         if (res.ok) {
-            const { result } = await res.json();
-            console.log(result.print);
+            const { results } = await res.json();
+            console.log(results);
         } else {
             console.log("Oops! Something is wrong.")
         }

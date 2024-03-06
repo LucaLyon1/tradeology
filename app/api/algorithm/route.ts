@@ -1,13 +1,14 @@
 import { fetchData } from "@/lib/fetchData";
 import { payload, timeframe } from "@/types";
 import { Edge, Node } from "@xyflow/react";
+import { CandlestickData } from "lightweight-charts";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest, res: NextResponse) {
     const data: payload = await req.json();
     const { nodes, edges, symbol, timeframe, freq } = data;
     const code = generateCode(nodes, edges);
-    const results = executeCode(code, symbol, timeframe, freq)
+    const results = await executeCode(code, symbol, timeframe, freq);
     return Response.json({ results })
 
 }
@@ -26,10 +27,11 @@ function generateCode(nodes: Node[], edges: Edge[]) {
         visitedNodes.add(currentNode.id);
 
         //code += `// Process node: ${currentNode.type}\n`;
+        //How to access variables and decide if a node needs it ??
         switch (currentNode.type) {
             case "input":
                 code += "(function() {\n"
-                code += "var data={print:'',mean:20};\n"
+                code += "var output={print:'',mean:20, ma:ma21};\n"
                 break;
             case "forLoop":
                 code += `for(let i=0;i<${currentNode.data.value};i++){\n`;
@@ -38,10 +40,10 @@ function generateCode(nodes: Node[], edges: Edge[]) {
                 code += '};\n';
                 break;
             case "print":
-                code += `data.print+='${currentNode.data.value}\\n';\n`;
+                code += `output.print+='${currentNode.data.value}\\n';\n`;
                 break;
             case "output":
-                code += 'return data;'
+                code += 'return output;'
                 code += "})();"
                 break;
         }
@@ -62,21 +64,23 @@ function generateCode(nodes: Node[], edges: Edge[]) {
     return code;
 }
 
-function executeCode(code: string, symbol: string, timeframe: timeframe, freq: string) {
+async function executeCode(code: string, symbol: string, timeframe: timeframe, freq: string) {
     //TODO: need to find the best way to apply the code to the dataset
     //need to enforce that result is a function
     //ideas: wrap user's code in a for loop, keep track of every indicator's value at every iteration
-    const data = fetchData(symbol);
+    const data = await fetchData(symbol);
+    const ma21 = movingAverage(data, 21);
+    const ma7 = movingAverage(data, 7);
     const result = eval(code);
+    console.log(result);
 
     return result;
 }
 
-const movingAverage = (dataSet, period) => {
-  const output = Array(period).fill(0);
-  for(i=period-1;i<dataSet.length;i++) {
-    output.push(dataSet.slice(i-(period-1), i)
-               .reduce((a,b) => a+b)/period)
-  }
-  return output
+const movingAverage = (dataSet: Array<CandlestickData>, period: number) => {
+    const output: number[] = Array(period).fill(0);
+    for (let i = period - 1; i < dataSet.length; i++) {
+        output.push(dataSet.slice(i - (period - 1), i).reduce((a, b) => a + b.close, 0) / period)
+    }
+    return output
 }
