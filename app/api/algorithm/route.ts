@@ -71,3 +71,12 @@ function executeCode(code: string, symbol: string, timeframe: timeframe, freq: s
 
     return result;
 }
+
+const movingAverage = (dataSet, period) => {
+  const output = Array(period).fill(0);
+  for(i=period-1;i<dataSet.length;i++) {
+    output.push(dataSet.slice(i-(period-1), i)
+               .reduce((a,b) => a+b)/period)
+  }
+  return output
+}
