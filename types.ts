@@ -24,3 +24,10 @@ export interface timeframe {
     beg: Date,
     end: Date
 }
+
+export interface CodeContext {
+    balance: number,
+    inventory: { [key: string]: number },
+    print: string,
+    buy: () => void
+}

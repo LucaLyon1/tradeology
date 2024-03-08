@@ -1,13 +1,14 @@
 import { fetchData } from "@/lib/fetchData";
-import { payload, timeframe } from "@/types";
+import { CodeContext, payload, timeframe } from "@/types";
 import { Edge, Node } from "@xyflow/react";
-import { CandlestickData } from "lightweight-charts";
+import { CandlestickData, Time } from "lightweight-charts";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest, res: NextResponse) {
     const data: payload = await req.json();
     const { nodes, edges, symbol, timeframe, freq } = data;
     const code = generateCode(nodes, edges);
+    console.log(code);
     const results = await executeCode(code, symbol, timeframe, freq);
     return Response.json({ results })
 
@@ -26,12 +27,11 @@ function generateCode(nodes: Node[], edges: Edge[]) {
         }
         visitedNodes.add(currentNode.id);
 
-        //code += `// Process node: ${currentNode.type}\n`;
+        code += `// Process node: ${currentNode.type}\n`;
         //How to access variables and decide if a node needs it ??
         switch (currentNode.type) {
             case "input":
                 code += "(function() {\n"
-                code += "var output={print:'',mean:20, ma:ma21};\n"
                 break;
             case "forLoop":
                 code += `for(let i=0;i<${currentNode.data.value};i++){\n`;
@@ -40,10 +40,13 @@ function generateCode(nodes: Node[], edges: Edge[]) {
                 code += '};\n';
                 break;
             case "print":
-                code += `output.print+='${currentNode.data.value}\\n';\n`;
+                code += `context.print+='${currentNode.data.value}\\n';\n`;
+                break;
+            case "buy":
+                code += `context.buy(context, data, 1);\n`;
                 break;
             case "output":
-                code += 'return output;'
+                code += 'return context;\n'
                 code += "})();"
                 break;
         }
@@ -68,9 +71,14 @@ async function executeCode(code: string, symbol: string, timeframe: timeframe, f
     //TODO: need to find the best way to apply the code to the dataset
     //need to enforce that result is a function
     //ideas: wrap user's code in a for loop, keep track of every indicator's value at every iteration
+    const buyStock = (context: CodeContext, data: CandlestickData<Time>[], n: number) => {
+        context.balance -= data[n].close;
+        context.inventory[symbol] ? context.inventory[symbol] += 1 : context.inventory[symbol] = 1;
+    }
     const data = await fetchData(symbol);
     const ma21 = movingAverage(data, 21);
     const ma7 = movingAverage(data, 7);
+    const context = { balance: 1000, inventory: {}, print: '', buy: buyStock }
     const result = eval(code);
     console.log(result);
 
