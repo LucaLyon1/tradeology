@@ -43,7 +43,9 @@ function generateCode(nodes: Node[], edges: Edge[]) {
             case "ifElse":
                 let condition: Condition = currentNode.data.condition
                 let conditionString = condition.left + '[i]' + condition.operator + condition.right + '[i]'
-                code += `if(${conditionString}) {\n`;
+                let prevCandle = '(' + condition.left + '[i-1]' + condition.operator + condition.right + '[i-1])'
+                code += `if(i>=1 && ${conditionString} && !${prevCandle}) {\n`;
+                code += `console.log(data[i].time, ${condition.left + '[i]'}, ${condition.right + '[i]'});\n`
                 break;
             case "print":
                 code += `context.print+='${currentNode.data.value}\\n';\n`;
@@ -103,7 +105,7 @@ async function executeCode(code: string, symbol: string, timeframe: timeframe, f
 }
 
 const movingAverage = (dataSet: Array<CandlestickData>, period: number) => {
-    const output: number[] = Array(period).fill(0);
+    const output: number[] = Array(period - 1).fill(0);
     for (let i = period - 1; i <= dataSet.length; i++) {
         output.push(dataSet.slice(i - period, i).reduce((a, b) => a + b.close, 0) / period)
     }
