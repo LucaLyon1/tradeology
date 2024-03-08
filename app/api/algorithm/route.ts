@@ -14,6 +14,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
 }
 
+//TODO: idea : create a queue of nodes to explore to generate codes in the orders intended
 function generateCode(nodes: Node[], edges: Edge[]) {
     let code = "";
     const visitedNodes = new Set(); // Track visited nodes to avoid infinite loops
@@ -27,7 +28,7 @@ function generateCode(nodes: Node[], edges: Edge[]) {
         }
         visitedNodes.add(currentNode.id);
 
-        code += `// Process node: ${currentNode.type}\n`;
+        //code += `// Process node: ${currentNode.type}\n`;
         //How to access variables and decide if a node needs it ??
         switch (currentNode.type) {
             case "input":
@@ -38,6 +39,9 @@ function generateCode(nodes: Node[], edges: Edge[]) {
                 break;
             case "endNode":
                 code += '};\n';
+                break;
+            case "ifElse":
+                code += `if(${currentNode.data.condition}) {\n`;
                 break;
             case "print":
                 code += `context.print+='${currentNode.data.value}\\n';\n`;
@@ -71,8 +75,8 @@ async function executeCode(code: string, symbol: string, timeframe: timeframe, f
     //TODO: need to find the best way to apply the code to the dataset
     //need to enforce that result is a function
     //ideas: wrap user's code in a for loop, keep track of every indicator's value at every iteration
-    const buyStock = (context: CodeContext, data: CandlestickData<Time>[], n: number) => {
-        context.balance -= data[n].close;
+    const buyStock = (context: CodeContext, price: number, n: number) => {
+        context.balance -= price;
         context.inventory[symbol] ? context.inventory[symbol] += 1 : context.inventory[symbol] = 1;
     }
     const data = await fetchData(symbol);

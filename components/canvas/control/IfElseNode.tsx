@@ -1,6 +1,8 @@
 'use client'
 
-import { Handle, Position, useHandleConnections } from "@xyflow/react";
+import ApiContext from "@/lib/apiContext";
+import { Handle, Position, useHandleConnections, useNodeId } from "@xyflow/react";
+import { useContext, useEffect, useState } from "react";
 
 const handle = {
     width: "32px",
@@ -36,6 +38,18 @@ const handleElse = {
 };
 
 export default function IfElseNode() {
+    const id = useNodeId();
+    const api = useContext(ApiContext);
+    const [premise, setPremise] = useState('ma7');
+    const [oper, setOper] = useState('>');
+    const [last, setLast] = useState('ma21');
+
+    useEffect(() => {
+        api.updateNodes(id, {
+            condition: premise + oper + last
+        });
+    }, [premise, oper, last])
+
     const onConnect = () => {
         console.log("connect");
     }
@@ -51,14 +65,38 @@ export default function IfElseNode() {
         onDisconnect
     });
 
+    const handleChange = (e: React.FormEvent<HTMLSelectElement>, choice: string) => {
+        const value = e.currentTarget.value;
+        switch (choice) {
+            case "pre":
+                setPremise(value);
+                break;
+            case "oper":
+                setOper(value);
+                break;
+            case "last":
+                setLast(value);
+                break;
+        }
+    }
+
     return (
         <div className="h-24 p-1 border border-gray-700 flex justify-center items-center rounded-md bg-white">
             <p>If</p>
             {/*TODO: select options should be defined by the parent*/}
-            <select name="statement" className="border">
-                <option value="MA">Moving Average</option>
-                <option value="MA">Moving Average</option>
-                <option value="MA">Moving Average</option>
+            {/*TODO: find a way to handle duration of moving average*/}
+            <select onChange={(e) => handleChange(e, "pre")} value={premise} className="border">
+                <option value="ma">Moving Average</option>
+                <option value="rsi">RSI</option>
+            </select>
+            {/*TODO: create json file with operators and indicators*/}
+            <select onChange={(e) => handleChange(e, "oper")} value={oper} className="border">
+                <option value=">">{">"}</option>
+                <option value="<">{"<"}</option>
+            </select>
+            <select onChange={(e) => handleChange(e, "last")} value={last} className="border">
+                <option value="ma">Moving Average</option>
+                <option value="rsi">RSI</option>
             </select>
             <Handle
                 type="target"

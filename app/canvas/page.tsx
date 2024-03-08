@@ -42,6 +42,7 @@ function Canvas() {
             }
             return n
         }))
+        console.log(nodes);
     }
 
     let api = {
