@@ -1,5 +1,5 @@
 import { fetchData } from "@/lib/fetchData";
-import { CodeContext, payload, timeframe } from "@/types";
+import { CodeContext, Condition, payload, timeframe } from "@/types";
 import { Edge, Node } from "@xyflow/react";
 import { CandlestickData, Time } from "lightweight-charts";
 import { NextRequest, NextResponse } from "next/server";
@@ -41,13 +41,18 @@ function generateCode(nodes: Node[], edges: Edge[]) {
                 code += '};\n';
                 break;
             case "ifElse":
-                code += `if(${currentNode.data.condition}) {\n`;
+                let condition: Condition = currentNode.data.condition
+                let conditionString = condition.left + '[i]' + condition.operator + condition.right + '[i]'
+                code += `if(${conditionString}) {\n`;
                 break;
             case "print":
                 code += `context.print+='${currentNode.data.value}\\n';\n`;
                 break;
             case "buy":
-                code += `context.buy(context, data, 1);\n`;
+                code += `context.buy(context, data[i].close, 1);\n`;
+                break;
+            case "sell":
+                code += `context.sell(context,  data[i].close, 1);\n`;
                 break;
             case "output":
                 code += 'return context;\n'
@@ -76,23 +81,31 @@ async function executeCode(code: string, symbol: string, timeframe: timeframe, f
     //need to enforce that result is a function
     //ideas: wrap user's code in a for loop, keep track of every indicator's value at every iteration
     const buyStock = (context: CodeContext, price: number, n: number) => {
-        context.balance -= price;
-        context.inventory[symbol] ? context.inventory[symbol] += 1 : context.inventory[symbol] = 1;
+        if (context.balance >= price) {
+            context.balance -= price;
+            context.inventory[symbol] ? context.inventory[symbol] += 1 : context.inventory[symbol] = 1;
+        }
+    }
+    const sellStock = (context: CodeContext, price: number, n: number) => {
+        if (!context.inventory[symbol]) return;
+        context.balance += price;
+        context.inventory[symbol]--;
     }
     const data = await fetchData(symbol);
     const ma21 = movingAverage(data, 21);
     const ma7 = movingAverage(data, 7);
-    const context = { balance: 1000, inventory: {}, print: '', buy: buyStock }
-    const result = eval(code);
-    console.log(result);
+    let context = { balance: 1000, inventory: {}, print: '', buy: buyStock, sell: sellStock }
+    for (let i = 0; i < data.length; i++) {
+        eval(code)
+    }
 
-    return result;
+    return context;
 }
 
 const movingAverage = (dataSet: Array<CandlestickData>, period: number) => {
     const output: number[] = Array(period).fill(0);
-    for (let i = period - 1; i < dataSet.length; i++) {
-        output.push(dataSet.slice(i - (period - 1), i).reduce((a, b) => a + b.close, 0) / period)
+    for (let i = period - 1; i <= dataSet.length; i++) {
+        output.push(dataSet.slice(i - period, i).reduce((a, b) => a + b.close, 0) / period)
     }
     return output
 }

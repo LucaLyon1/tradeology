@@ -31,3 +31,9 @@ export interface CodeContext {
     print: string,
     buy: () => void
 }
+
+export interface Condition {
+    left: string,
+    operator: string,
+    right: string,
+}

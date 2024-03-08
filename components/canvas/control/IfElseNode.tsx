@@ -1,6 +1,7 @@
 'use client'
 
 import ApiContext from "@/lib/apiContext";
+import { Condition } from "@/types";
 import { Handle, Position, useHandleConnections, useNodeId } from "@xyflow/react";
 import { useContext, useEffect, useState } from "react";
 
@@ -37,18 +38,24 @@ const handleElse = {
     fontSize: '12px'
 };
 
+const initialCondition: Condition = {
+    left: "ma7",
+    operator: ">",
+    right: "ma21",
+}
+
 export default function IfElseNode() {
     const id = useNodeId();
     const api = useContext(ApiContext);
-    const [premise, setPremise] = useState('ma7');
-    const [oper, setOper] = useState('>');
-    const [last, setLast] = useState('ma21');
+    const [condition, setCondition] = useState<Condition>(initialCondition);
+
 
     useEffect(() => {
         api.updateNodes(id, {
-            condition: premise + oper + last
+            condition: condition
         });
-    }, [premise, oper, last])
+        console.log(condition)
+    }, [condition.left, condition.operator, condition.right])
 
     const onConnect = () => {
         console.log("connect");
@@ -69,13 +76,13 @@ export default function IfElseNode() {
         const value = e.currentTarget.value;
         switch (choice) {
             case "pre":
-                setPremise(value);
+                setCondition({ ...condition, left: value });
                 break;
             case "oper":
-                setOper(value);
+                setCondition({ ...condition, operator: value });
                 break;
             case "last":
-                setLast(value);
+                setCondition({ ...condition, right: value });
                 break;
         }
     }
@@ -85,16 +92,16 @@ export default function IfElseNode() {
             <p>If</p>
             {/*TODO: select options should be defined by the parent*/}
             {/*TODO: find a way to handle duration of moving average*/}
-            <select onChange={(e) => handleChange(e, "pre")} value={premise} className="border">
+            <select onChange={(e) => handleChange(e, "pre")} value={condition.left} className="border">
                 <option value="ma">Moving Average</option>
                 <option value="rsi">RSI</option>
             </select>
             {/*TODO: create json file with operators and indicators*/}
-            <select onChange={(e) => handleChange(e, "oper")} value={oper} className="border">
+            <select onChange={(e) => handleChange(e, "oper")} value={condition.operator} className="border">
                 <option value=">">{">"}</option>
                 <option value="<">{"<"}</option>
             </select>
-            <select onChange={(e) => handleChange(e, "last")} value={last} className="border">
+            <select onChange={(e) => handleChange(e, "last")} value={condition.right} className="border">
                 <option value="ma">Moving Average</option>
                 <option value="rsi">RSI</option>
             </select>
