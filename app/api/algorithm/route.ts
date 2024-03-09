@@ -52,9 +52,11 @@ function generateCode(nodes: Node[], edges: Edge[]) {
                 break;
             case "buy":
                 code += `context.buy(context, data[i].close, 1);\n`;
+                code += `console.log('bought at', data[i].close);\n`;
                 break;
             case "sell":
                 code += `context.sell(context,  data[i].close, 1);\n`;
+                code += `console.log('sold at', data[i].close);\n`;
                 break;
             case "output":
                 code += 'return context;\n'
@@ -106,8 +108,9 @@ async function executeCode(code: string, symbol: string, timeframe: timeframe, f
 
 const movingAverage = (dataSet: Array<CandlestickData>, period: number) => {
     const output: number[] = Array(period - 1).fill(0);
-    for (let i = period - 1; i <= dataSet.length; i++) {
-        output.push(dataSet.slice(i - period, i).reduce((a, b) => a + b.close, 0) / period)
+    for (let i = period; i <= dataSet.length; i++) {
+        let average = dataSet.slice(i - period, i).reduce((a, b) => a + b.close, 0) / period;
+        output.push(Math.round(average * 100) / 100)
     }
     return output
 }

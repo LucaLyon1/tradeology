@@ -13,6 +13,7 @@ import PrintNode from '@/components/canvas/control/PrintNode'
 import generateAlgo from '@/lib/generateAlgo';
 import EndNode from '@/components/canvas/control/EndNode';
 import BuyNode from '@/components/canvas/order/BuyNode';
+import sellNode from '@/components/canvas/order/SellNode';
 
 const initialNodes = [
     { id: 'startnd', type: 'input', position: { x: 300, y: 100 }, data: { label: 'Start' } },
@@ -26,6 +27,7 @@ const nodeTypes = {
     print: PrintNode,
     endNode: EndNode,
     buy: BuyNode,
+    sell: sellNode,
 }
 
 let countId = 0;
@@ -98,6 +100,11 @@ function Canvas() {
                 className='text-white mx-2 rounded-md px-2 py-2 bg-green-500'
                 onClick={() => addNode('buy')}>
                 Add Buy node
+            </button>
+            <button
+                className='text-white mx-2 rounded-md px-2 py-2 bg-green-500'
+                onClick={() => addNode('sell')}>
+                Add Sell node
             </button>
             <button
                 className='text-white mx-2 rounded-md px-2 py-2 bg-green-500'
