@@ -27,13 +27,21 @@ export interface timeframe {
 
 export interface CodeContext {
     balance: number,
-    inventory: { [key: string]: number },
+    inventory: { [key: string]: InventoryItem },
     print: string,
-    buy: () => void
+    buy: () => void,
+    sell: () => void,
+    history: Array<number>,
+    inventoryPrice: (arg0: CodeContext) => number
 }
 
 export interface Condition {
     left: string,
     operator: string,
     right: string,
+}
+
+export interface InventoryItem {
+    qty: number,
+    price: number,
 }

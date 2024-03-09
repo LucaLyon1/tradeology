@@ -29,7 +29,6 @@ function generateCode(nodes: Node[], edges: Edge[]) {
         visitedNodes.add(currentNode.id);
 
         //code += `// Process node: ${currentNode.type}\n`;
-        //How to access variables and decide if a node needs it ??
         switch (currentNode.type) {
             case "input":
                 code += "(function() {\n"
@@ -45,7 +44,6 @@ function generateCode(nodes: Node[], edges: Edge[]) {
                 let conditionString = condition.left + '[i]' + condition.operator + condition.right + '[i]'
                 let prevCandle = '(' + condition.left + '[i-1]' + condition.operator + condition.right + '[i-1])'
                 code += `if(i>=1 && ${conditionString} && !${prevCandle}) {\n`;
-                code += `console.log(data[i].time, ${condition.left + '[i]'}, ${condition.right + '[i]'});\n`
                 break;
             case "print":
                 code += `context.print+='${currentNode.data.value}\\n';\n`;
@@ -59,6 +57,8 @@ function generateCode(nodes: Node[], edges: Edge[]) {
                 code += `console.log('sold at', data[i].close);\n`;
                 break;
             case "output":
+                code += 'if(context.inventory[symbol]) context.inventory[symbol].price = data[i].close;\n'
+                code += 'context.history.push(context.balance + context.inventoryPrice(context));\n'
                 code += 'return context;\n'
                 code += "})();"
                 break;
@@ -81,24 +81,25 @@ function generateCode(nodes: Node[], edges: Edge[]) {
 }
 
 async function executeCode(code: string, symbol: string, timeframe: timeframe, freq: string) {
-    //TODO: need to find the best way to apply the code to the dataset
-    //need to enforce that result is a function
-    //ideas: wrap user's code in a for loop, keep track of every indicator's value at every iteration
+    //TODO: need to enforce that result is a function
     const buyStock = (context: CodeContext, price: number, n: number) => {
         if (context.balance >= price) {
             context.balance -= price;
-            context.inventory[symbol] ? context.inventory[symbol] += 1 : context.inventory[symbol] = 1;
+            context.inventory[symbol] ? context.inventory[symbol].qty += 1 : context.inventory[symbol] = { qty: 1, price: price };
         }
     }
     const sellStock = (context: CodeContext, price: number, n: number) => {
         if (!context.inventory[symbol]) return;
         context.balance += price;
-        context.inventory[symbol]--;
+        context.inventory[symbol].qty--;
+    }
+    const inventoryPrice = (context: CodeContext) => {
+        return context.inventory[symbol] ? context.inventory[symbol].qty * context.inventory[symbol].price : 0;
     }
     const data = await fetchData(symbol);
     const ma21 = movingAverage(data, 21);
     const ma7 = movingAverage(data, 7);
-    let context = { balance: 1000, inventory: {}, print: '', buy: buyStock, sell: sellStock }
+    let context = { balance: 1000, inventory: {}, print: '', buy: buyStock, sell: sellStock, history: [], inventoryPrice: inventoryPrice }
     for (let i = 0; i < data.length; i++) {
         eval(code)
     }
@@ -107,7 +108,7 @@ async function executeCode(code: string, symbol: string, timeframe: timeframe, f
 }
 
 const movingAverage = (dataSet: Array<CandlestickData>, period: number) => {
-    const output: number[] = Array(period - 1).fill(0);
+    const output: number[] = Array(period - 1).fill(undefined);
     for (let i = period; i <= dataSet.length; i++) {
         let average = dataSet.slice(i - period, i).reduce((a, b) => a + b.close, 0) / period;
         output.push(Math.round(average * 100) / 100)

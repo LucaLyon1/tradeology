@@ -10,14 +10,18 @@
     - [x] Moving element dynamically with the graph
     - [x] Arrows between elements
     - [x] Object that keeps track of the elements on canvas and their links
-- [ ] Bring datasets in (stock prices)
-- [ ] *Milestone* creating a simple crossing Moving Average strategy
+- [x] Bring datasets in (stock prices)
+- [🚧] *Milestone* creating a simple crossing Moving Average strategy
+- [ ] Dynamically set the stock symbol
+- [ ] Add a few indicators
 - [ ] Chosing the timeframe for the execution
 - [ ] Run button to back test trading algorithm on datas
     - [🚧] Compiler of every block on the canvas how they are related
     - [🚧] Creation of the code for the algorithm
     - [ ] Running the code on datas
+- [ ] Think of something to avoid having to put end of block
 - [ ] Saving the strategy
     - [ ] Look how to store JSON in PostgreSQL
+- [ ] *Milestone* create a return to the mean strategy
 - [ ] Dashboard to see the strategy performance on the given timeframe
 - [ ] Social card to share the strategy on social media
