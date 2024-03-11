@@ -20,8 +20,9 @@
     - [🚧] Creation of the code for the algorithm
     - [ ] Running the code on datas
 - [ ] Think of something to avoid having to put end of block
+- [ ] *Milestone* Add the possibility to create custom indicators
 - [ ] Saving the strategy
     - [ ] Look how to store JSON in PostgreSQL
-- [ ] *Milestone* create a return to the mean strategy
 - [ ] Dashboard to see the strategy performance on the given timeframe
+- [ ] *Milestone* create a return to the mean strategy
 - [ ] Social card to share the strategy on social media
