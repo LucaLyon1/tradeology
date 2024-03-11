@@ -74,6 +74,7 @@ export default function IfElseNode() {
 
     const handleChange = (e: React.FormEvent<HTMLSelectElement>, choice: string) => {
         const value = e.currentTarget.value;
+        console.log(api.getPosition(id));
         switch (choice) {
             case "pre":
                 setCondition({ ...condition, left: value });
@@ -86,9 +87,9 @@ export default function IfElseNode() {
                 break;
         }
     }
-
     return (
-        <div className="h-24 p-1 border border-gray-700 flex justify-center items-center rounded-md bg-white">
+        <div
+            className="h-24 p-1 border border-gray-700 flex justify-center items-center rounded-md bg-white">
             <p>If</p>
             {/*TODO: select options should be defined by the parent*/}
             {/*TODO: find a way to handle duration of moving average*/}

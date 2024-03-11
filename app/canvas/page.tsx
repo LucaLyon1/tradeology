@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useCallback, useState } from 'react'
+import React, { useCallback } from 'react'
 
 import { ReactFlow, useNodesState, useEdgesState, addEdge, Edge, Connection, Controls, Background, MiniMap, EdgeChange, BackgroundVariant } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
@@ -46,9 +46,13 @@ function Canvas() {
         }))
         console.log(nodes);
     }
+    const getPosition = (nodeId: string | null) => {
+        return nodes.find((node) => node.id == nodeId)?.position
+    }
 
     let api = {
-        updateNodes
+        updateNodes,
+        getPosition
     };
 
     const onConnect = useCallback((params: Edge | Connection) =>
@@ -58,7 +62,7 @@ function Canvas() {
 
 
     const addNode = (type: string) => {
-        setNodes([...nodes, { id: type + countId++, type: type, position: { x: 0, y: 100 }, data: { label: "1" } }]);
+        setNodes([...nodes, { id: type + countId++, type: type, position: { x: 200, y: 200 }, data: { label: "1" } }]);
     }
 
     const algoGen = async () => {
@@ -71,6 +75,13 @@ function Canvas() {
             freq: '1D'
         }
         await generateAlgo(data)
+    }
+
+    const onNodeDrag = (e: React.MouseEvent) => {
+        console.log(e);
+        let xpos = e.clientX + e.nativeEvent.offsetX;
+        let ypos = e.clientY + e.nativeEvent.offsetY
+        //TODO: check if xpos and ypos are intersecting with any other node
     }
 
     return (
@@ -117,6 +128,7 @@ function Canvas() {
                     edges={edges}
                     onNodesChange={onNodesChange}
                     onEdgesChange={onEdgesChange}
+                    onNodeDrag={(e) => onNodeDrag(e)}
                     onConnect={onConnect}
                     nodeTypes={nodeTypes}
                 >

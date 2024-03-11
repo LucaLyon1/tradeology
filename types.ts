@@ -9,7 +9,8 @@ export enum Blocks {
 }
 
 export interface apiInt {
-    updateNodes: (nodeId: string | null, data: any) => void
+    updateNodes: (nodeId: string | null, data: any) => void,
+    getPosition: (nodeId: string | null) => { x: number, y: number } | undefined
 }
 
 export interface payload {
