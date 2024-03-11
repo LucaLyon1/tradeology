@@ -11,7 +11,7 @@
     - [x] Arrows between elements
     - [x] Object that keeps track of the elements on canvas and their links
 - [x] Bring datasets in (stock prices)
-- [🚧] *Milestone* creating a simple crossing Moving Average strategy
+- [🚧] **Milestone** creating a simple crossing Moving Average strategy
 - [ ] Dynamically set the stock symbol
 - [ ] Add a few indicators
 - [ ] Chosing the timeframe for the execution
@@ -20,9 +20,9 @@
     - [🚧] Creation of the code for the algorithm
     - [ ] Running the code on datas
 - [ ] Think of something to avoid having to put end of block
-- [ ] *Milestone* Add the possibility to create custom indicators
+- [ ] **Milestone** Add the possibility to create custom indicators
 - [ ] Saving the strategy
     - [ ] Look how to store JSON in PostgreSQL
 - [ ] Dashboard to see the strategy performance on the given timeframe
-- [ ] *Milestone* create a return to the mean strategy
+- [ ] **Milestone** create a return to the mean strategy
 - [ ] Social card to share the strategy on social media
