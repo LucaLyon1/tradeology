@@ -82,6 +82,8 @@ function Canvas() {
         let xpos = e.clientX + e.nativeEvent.offsetX;
         let ypos = e.clientY + e.nativeEvent.offsetY
         //TODO: check if xpos and ypos are intersecting with any other node
+        //Also add size {height, width} as node state and access it via the data attribute
+        //need api function to update it
     }
 
     return (
