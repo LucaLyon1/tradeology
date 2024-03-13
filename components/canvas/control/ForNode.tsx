@@ -3,7 +3,7 @@
 import ApiContext from "@/lib/apiContext";
 import { apiInt } from "@/types";
 import { Handle, Position, useHandleConnections, useNodeId } from "@xyflow/react";
-import { useContext, useState } from "react";
+import { memo, useContext, useState } from "react";
 
 const handle = {
     width: "32px",
@@ -25,7 +25,7 @@ const handleLoop = {
     fontSize: '12px'
 };
 
-export default function ForNode() {
+function ForNode() {
     const api = useContext<apiInt>(ApiContext);
     const id = useNodeId();
     const [qty, setQty] = useState(1)
@@ -81,3 +81,5 @@ export default function ForNode() {
         </div>
     )
 }
+
+export default memo(ForNode)

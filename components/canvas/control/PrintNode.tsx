@@ -1,6 +1,6 @@
 import ApiContext from "@/lib/apiContext";
 import { Handle, Position, useNodeId } from "@xyflow/react";
-import { useContext, useState } from "react"
+import { memo, useContext, useState } from "react"
 
 const handle = {
     width: "24px",
@@ -10,7 +10,7 @@ const handle = {
 };
 
 
-export default function WhileCanvas() {
+function PrintNode() {
     const [value, setValue] = useState('');
     const id = useNodeId();
     const api = useContext(ApiContext);
@@ -40,3 +40,5 @@ export default function WhileCanvas() {
         </div>
     )
 }
+
+export default memo(PrintNode)

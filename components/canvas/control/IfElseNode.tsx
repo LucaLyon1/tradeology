@@ -2,8 +2,8 @@
 
 import ApiContext from "@/lib/apiContext";
 import { Condition } from "@/types";
-import { Handle, Position, useHandleConnections, useNodeId } from "@xyflow/react";
-import { useContext, useEffect, useState } from "react";
+import { Handle, NodeProps, Position, useHandleConnections, useNodeId } from "@xyflow/react";
+import { memo, useContext, useEffect, useState } from "react";
 
 const handle = {
     width: "32px",
@@ -44,7 +44,7 @@ const initialCondition: Condition = {
     right: "ma21",
 }
 
-export default function IfElseNode() {
+function IfElseNode({ data, targetPosition, sourcePosition }: NodeProps) {
     const id = useNodeId();
     const api = useContext(ApiContext);
     const [condition, setCondition] = useState<Condition>(initialCondition);
@@ -52,9 +52,8 @@ export default function IfElseNode() {
 
     useEffect(() => {
         api.updateNodes(id, {
-            condition: condition
+            condition: condition,
         });
-        console.log(condition)
     }, [condition.left, condition.operator, condition.right])
 
     const onConnect = () => {
@@ -89,7 +88,7 @@ export default function IfElseNode() {
     }
     return (
         <div
-            className="h-24 p-1 border border-gray-700 flex justify-center items-center rounded-md bg-white">
+            className="flex justify-center items-center rounded-md">
             <p>If</p>
             {/*TODO: select options should be defined by the parent*/}
             {/*TODO: find a way to handle duration of moving average*/}
@@ -130,3 +129,5 @@ export default function IfElseNode() {
         </div>
     )
 }
+
+export default memo(IfElseNode)

@@ -2,7 +2,7 @@
 
 import React, { useCallback } from 'react'
 
-import { ReactFlow, useNodesState, useEdgesState, addEdge, Edge, Connection, Controls, Background, MiniMap, EdgeChange, BackgroundVariant } from '@xyflow/react';
+import { ReactFlow, useNodesState, useEdgesState, addEdge, Edge, Connection, Controls, Background, MiniMap, EdgeChange, BackgroundVariant, Node, useReactFlow } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
 import ApiContext from '@/lib/apiContext';
@@ -16,8 +16,8 @@ import BuyNode from '@/components/canvas/order/BuyNode';
 import sellNode from '@/components/canvas/order/SellNode';
 
 const initialNodes = [
-    { id: 'startnd', type: 'input', position: { x: 300, y: 100 }, data: { label: 'Start' } },
-    { id: 'endnd', type: 'output', position: { x: 300, y: 250 }, data: { label: 'End' } },
+    { id: 'startnd', type: 'input', position: { x: 300, y: 100 }, data: { label: 'Start' }, style: {} },
+    { id: 'endnd', type: 'output', position: { x: 300, y: 250 }, data: { label: 'End' }, style: {} },
 ];
 const initialEdges: Edge[] = [];
 
@@ -36,6 +36,7 @@ let countId = 0;
 function Canvas() {
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+    const { getIntersectingNodes } = useReactFlow();
 
     const updateNodes = (nodeId: string | null, data: any) => {
         setNodes(nodes.map((n) => {
@@ -62,7 +63,13 @@ function Canvas() {
 
 
     const addNode = (type: string) => {
-        setNodes([...nodes, { id: type + countId++, type: type, position: { x: 200, y: 200 }, data: { label: "1" } }]);
+        setNodes([...nodes, {
+            id: type + countId++,
+            type: type,
+            position: { x: 200, y: 200 },
+            data: { label: "1" },
+            style: { border: '1px solid #777', padding: 10, backgroundColor: '#FFF', borderRadius: '5px' }
+        }]);
     }
 
     const algoGen = async () => {
@@ -77,14 +84,20 @@ function Canvas() {
         await generateAlgo(data)
     }
 
-    const onNodeDrag = (e: React.MouseEvent) => {
-        console.log(e);
-        let xpos = e.clientX + e.nativeEvent.offsetX;
-        let ypos = e.clientY + e.nativeEvent.offsetY
+    const onNodeDrag = useCallback((e: React.MouseEvent<Element, MouseEvent>, node: Node) => {
+        //doesnt work
+        const intersections = getIntersectingNodes(node);
+        console.log(intersections);
+        setNodes((nodes) => nodes.map((n) => ({
+            ...n,
+            style: n.id == node.id ? { ...n.style, height: 200 } : ''
+        })));
+        //let xpos = e.clientX + e.nativeEvent.offsetX;
+        //let ypos = e.clientY + e.nativeEvent.offsetY
         //TODO: check if xpos and ypos are intersecting with any other node
         //Also add size {height, width} as node state and access it via the data attribute
         //need api function to update it
-    }
+    }, [])
 
     return (
         <div style={{ width: '100vw', height: '100vh', fontSize: '12px' }}>
@@ -130,7 +143,7 @@ function Canvas() {
                     edges={edges}
                     onNodesChange={onNodesChange}
                     onEdgesChange={onEdgesChange}
-                    onNodeDrag={(e) => onNodeDrag(e)}
+                    onNodeDrag={(e, n) => onNodeDrag(e, n)}
                     onConnect={onConnect}
                     nodeTypes={nodeTypes}
                 >

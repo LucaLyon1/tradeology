@@ -3,7 +3,7 @@
 import ApiContext from "@/lib/apiContext";
 import { apiInt } from "@/types";
 import { Handle, Position, useHandleConnections, useNodeId } from "@xyflow/react";
-import { useContext, useState } from "react";
+import { memo, useContext, useState } from "react";
 
 const handle = {
     width: "32px",
@@ -11,8 +11,7 @@ const handle = {
     borderRadius: "5px",
     backgroundColor: '#784be8',
 };
-
-export default function EndNode() {
+function EndNode() {
     const api = useContext<apiInt>(ApiContext);
     const id = useNodeId();
 
@@ -48,3 +47,6 @@ export default function EndNode() {
         </div>
     )
 }
+
+
+export default memo(EndNode)
