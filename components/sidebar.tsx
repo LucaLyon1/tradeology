@@ -1,49 +1,45 @@
-import { Blocks } from "@/types";
-import Block from "./code/block";
+import { sideApi } from "@/types";
 
-interface BlockData {
-    text: string,
-    description: string
-}
+export default function Sidebar({ api }: { api: sideApi }) {
+    const { addNode, algoGen } = api;
 
-const data: { [key in Blocks]: BlockData } = {
-    [Blocks.BuyOrder]: {
-        text: 'Buy order',
-        description: 'Use this block to place a sell order in your algorithm'
-    },
-    [Blocks.SellOrder]: {
-        text: 'Sell order',
-        description: 'Use this block to place a sell order in your algorithm'
-    },
-    [Blocks.ForLoop]: {
-        text: 'For loop',
-        description: 'Will loop over an expression with the following pattern : for ... in ...'
-    },
-    [Blocks.IfElse]: {
-        text: 'If/Else block',
-        description: 'Will create two branches in your algorithm, depending on a criteria'
-    },
-    [Blocks.WhileLoop]: {
-        text: 'While loop',
-        description: 'This block will loop over an expression while a condition is met'
-    }
-
-}
-
-export default function Sidebar({ addBlock }: { addBlock: (newBlock: Blocks) => void }) {
-    const handleClick = (block: Blocks) => {
-        addBlock(block)
-    }
     return (
-        <div className="h-screen mx-2 my-2">
-            {Object.entries(data).map(([key, value]) => {
-                const block = Number(key) as Blocks
-                return (
-                    <div key={key} onClick={() => handleClick(block)}>
-                        <Block text={value.text} description={value.description} />
-                    </div>
-                )
-            })}
+        <div className="mx-2 my-2">
+            <button
+                className='text-white mx-2 rounded-md px-2 py-2 bg-green-500'
+                onClick={() => addNode('ifElse')}>
+                Add if else node
+            </button>
+            <button
+                className='text-white mx-2 rounded-md px-2 py-2 bg-green-500'
+                onClick={() => addNode('forLoop')}>
+                Add for node
+            </button>
+            <button
+                className='text-white mx-2 rounded-md px-2 py-2 bg-green-500'
+                onClick={() => addNode('endNode')}>
+                Add End Of Block node
+            </button>
+            <button
+                className='text-white mx-2 rounded-md px-2 py-2 bg-green-500'
+                onClick={() => addNode('print')}>
+                Add print node
+            </button>
+            <button
+                className='text-white mx-2 rounded-md px-2 py-2 bg-green-500'
+                onClick={() => addNode('buy')}>
+                Add Buy node
+            </button>
+            <button
+                className='text-white mx-2 rounded-md px-2 py-2 bg-green-500'
+                onClick={() => addNode('sell')}>
+                Add Sell node
+            </button>
+            <button
+                className='text-white mx-2 rounded-md px-2 py-2 bg-green-500'
+                onClick={algoGen}>
+                Generate algorithm
+            </button>
         </div>
     )
 }
