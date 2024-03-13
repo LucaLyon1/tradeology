@@ -84,11 +84,10 @@ function Canvas() {
 
     const onNodeDrag = useCallback((e: React.MouseEvent<Element, MouseEvent>, node: Node) => {
         //doesnt work
-        const intersections = getIntersectingNodes(node);
-        console.log(intersections);
+        const intersections = getIntersectingNodes(node).map((n) => n.id);
         setNodes((nodes) => nodes.map((n) => ({
             ...n,
-            style: n.id == node.id ? { ...n.style, height: 200 } : ''
+            style: intersections.includes(n.id) ? { ...n.style, height: 200 } : n.style,
         })));
         //let xpos = e.clientX + e.nativeEvent.offsetX;
         //let ypos = e.clientY + e.nativeEvent.offsetY
