@@ -31,7 +31,7 @@ function EndNode() {
     });
 
     return (
-        <div className="h-20 p-1 border border-gray-700 flex justify-center items-center rounded-md bg-white">
+        <>
             <Handle
                 type="target"
                 position={Position.Top}
@@ -44,7 +44,7 @@ function EndNode() {
                 position={Position.Bottom}
                 style={handle}>
             </Handle>
-        </div>
+        </>
     )
 }
 

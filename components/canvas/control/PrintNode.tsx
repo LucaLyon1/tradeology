@@ -24,7 +24,7 @@ function PrintNode() {
     }
 
     return (
-        <div className="h-12 text-xs p-1 border border-gray-700 flex justify-center items-center rounded-md bg-white">
+        <>
             <Handle
                 type="target"
                 position={Position.Top}
@@ -37,7 +37,7 @@ function PrintNode() {
                 position={Position.Bottom}
                 style={handle}
             />
-        </div>
+        </>
     )
 }
 

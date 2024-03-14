@@ -1,5 +1,5 @@
 import { Background, BackgroundVariant, Connection, Controls, Edge, MiniMap, ReactFlow, addEdge, useEdgesState, useNodesState, useReactFlow, Node } from "@xyflow/react";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
 import ApiContext from "@/lib/apiContext";
 import generateAlgo from "@/lib/generateAlgo";
@@ -31,6 +31,16 @@ const nodeTypes = {
     sell: sellNode,
 }
 
+const nodeStyles: { [key: string]: {} } = {
+    ifElse: { border: '1px solid #777', padding: 10, backgroundColor: '#FFF', borderRadius: '5px', width: 300, height: 75, display: 'flex' },
+    forLoop: { border: '1px solid #777', padding: 10, backgroundColor: '#FFF', borderRadius: '5px', width: 200, height: 75, display: 'flex' },
+    print: { border: '1px solid #777', padding: 10, backgroundColor: '#FFF', borderRadius: '5px', width: 200, height: 75, display: 'flex' },
+    endNode: { border: '1px solid #777', padding: 10, backgroundColor: '#FFF', borderRadius: '5px', width: 200, height: 75, display: 'flex' },
+    buy: { border: '1px solid #777', padding: 10, backgroundColor: '#FFF', borderRadius: '5px', width: 200, height: 75, display: 'flex' },
+    sell: { border: '1px solid #777', padding: 10, backgroundColor: '#FFF', borderRadius: '5px', width: 200, height: 75, display: 'flex' },
+
+}
+
 let countId = 0;
 
 
@@ -38,6 +48,7 @@ let countId = 0;
 function Canvas() {
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+    const [selected, setSelected] = useState<Node | null>(null);
     const { getIntersectingNodes } = useReactFlow();
 
     const updateNodes = (nodeId: string | null, data: any) => {
@@ -66,7 +77,7 @@ function Canvas() {
             type: type,
             position: { x: 200, y: 200 },
             data: { label: "1" },
-            style: { border: '1px solid #777', padding: 10, backgroundColor: '#FFF', borderRadius: '5px' }
+            style: nodeStyles[type]
         }]);
     }
 
@@ -83,17 +94,24 @@ function Canvas() {
     }
 
     const onNodeDrag = useCallback((e: React.MouseEvent<Element, MouseEvent>, node: Node) => {
-        //doesnt work
         const intersections = getIntersectingNodes(node).map((n) => n.id);
         setNodes((nodes) => nodes.map((n) => ({
             ...n,
-            style: intersections.includes(n.id) ? { ...n.style, height: 200 } : n.style,
+            style: intersections.includes(n.id) ? { ...n.style, backgroundColor: '#f00c50' } : nodeStyles[n.type],
         })));
-        //let xpos = e.clientX + e.nativeEvent.offsetX;
-        //let ypos = e.clientY + e.nativeEvent.offsetY
-        //TODO: check if xpos and ypos are intersecting with any other node
-        //Also add size {height, width} as node state and access it via the data attribute
-        //need api function to update it
+    }, [])
+
+    const onNodeDragStop = useCallback((e: React.MouseEvent<Element, MouseEvent>, node: Node) => {
+        const intersections = getIntersectingNodes(node);
+        if (intersections.length == 0) return;
+        const parent = intersections[0];
+        //if(!parent.data.acceptChildren) return;
+        setNodes((nodes) => nodes.map((n) => ({
+            ...n,
+            parentNode: n.id == node.id ? parent.id : '',
+            extent: n.id == node.id ? 'parent' : '',
+            style: n.id == parent.id ? { ...nodeStyles[n.type], width: n.style.width + nodeStyles[node.type].width, height: n.style.height + nodeStyles[node.type].height } : nodeStyles[n.type],
+        })));
     }, [])
 
     let api = {
@@ -117,6 +135,7 @@ function Canvas() {
                     onNodeDrag={(e, n) => onNodeDrag(e, n)}
                     onConnect={onConnect}
                     nodeTypes={nodeTypes}
+                    onNodeDragStop={(e, n) => onNodeDragStop(e, n)}
                 >
                     <Controls />
                     <MiniMap />

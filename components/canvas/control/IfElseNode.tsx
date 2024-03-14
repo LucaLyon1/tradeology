@@ -3,7 +3,7 @@
 import ApiContext from "@/lib/apiContext";
 import { Condition } from "@/types";
 import { Handle, NodeProps, Position, useHandleConnections, useNodeId } from "@xyflow/react";
-import { memo, useContext, useEffect, useState } from "react";
+import { memo, useContext, useEffect, useRef, useState } from "react";
 
 const handle = {
     width: "32px",
@@ -48,6 +48,7 @@ function IfElseNode({ data, targetPosition, sourcePosition }: NodeProps) {
     const id = useNodeId();
     const api = useContext(ApiContext);
     const [condition, setCondition] = useState<Condition>(initialCondition);
+    const child = data.child;
 
 
     useEffect(() => {
@@ -87,15 +88,14 @@ function IfElseNode({ data, targetPosition, sourcePosition }: NodeProps) {
         }
     }
     return (
-        <div
-            className="flex justify-center items-center rounded-md">
+        <>
             <p>If</p>
             {/*TODO: select options should be defined by the parent*/}
             {/*TODO: find a way to handle duration of moving average*/}
-            <select onChange={(e) => handleChange(e, "pre")} value={condition.left} className="border">
+            {child || <select onChange={(e) => handleChange(e, "pre")} value={condition.left} className="border">
                 <option value="ma">Moving Average</option>
                 <option value="rsi">RSI</option>
-            </select>
+            </select>}
             {/*TODO: create json file with operators and indicators*/}
             <select onChange={(e) => handleChange(e, "oper")} value={condition.operator} className="border">
                 <option value=">">{">"}</option>
@@ -126,7 +126,7 @@ function IfElseNode({ data, targetPosition, sourcePosition }: NodeProps) {
                 style={handleElse}>
                 Else
             </Handle>
-        </div>
+        </>
     )
 }
 

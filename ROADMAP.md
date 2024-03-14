@@ -12,6 +12,7 @@
     - [x] Object that keeps track of the elements on canvas and their links
 - [x] Bring datasets in (stock prices)
 - [🚧] **Milestone** creating a simple crossing Moving Average strategy
+- [ ] Makes some nodes intricable
 - [ ] Dynamically set the stock symbol
 - [ ] Add a few indicators
 - [ ] Chosing the timeframe for the execution

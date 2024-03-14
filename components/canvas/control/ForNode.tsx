@@ -54,7 +54,7 @@ function ForNode() {
     }
 
     return (
-        <div className="h-20 p-1 border border-gray-700 flex justify-center items-center rounded-md bg-white">
+        <>
             <p>Repeat</p>
             <input
                 className="ml-2 w-16"
@@ -78,7 +78,7 @@ function ForNode() {
                 style={handleLoop}>
                 Do
             </Handle>
-        </div>
+        </>
     )
 }
 
