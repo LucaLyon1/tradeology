@@ -1,5 +1,5 @@
 import { Background, BackgroundVariant, Connection, Controls, Edge, MiniMap, ReactFlow, addEdge, useEdgesState, useNodesState, useReactFlow, Node } from "@xyflow/react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import ApiContext from "@/lib/apiContext";
 import generateAlgo from "@/lib/generateAlgo";
@@ -17,8 +17,8 @@ import { sideApi } from "@/types";
 
 
 const initialNodes = [
-    { id: 'startnd', type: 'input', position: { x: 300, y: 100 }, data: { label: 'Start' }, style: {} },
-    { id: 'endnd', type: 'output', position: { x: 300, y: 250 }, data: { label: 'End' }, style: {} },
+    { id: 'startnd', type: 'input', position: { x: 300, y: 100 }, data: { label: 'Start', acceptChildren: true }, style: { width: 200, height: 100 }, zIndex: 1 },
+    { id: 'endnd', type: 'output', position: { x: 300, y: 250 }, data: { label: 'End', acceptChildren: false }, style: {}, zIndex: 2 },
 ];
 const initialEdges: Edge[] = [];
 
@@ -97,7 +97,7 @@ function Canvas() {
         const intersections = getIntersectingNodes(node).map((n) => n.id);
         setNodes((nodes) => nodes.map((n) => ({
             ...n,
-            style: intersections.includes(n.id) ? { ...n.style, backgroundColor: '#f00c50' } : nodeStyles[n.type],
+            //style: intersections.includes(n.id) ? { ...n.style, backgroundColor: '#f00c50' } : nodeStyles[n.type],
         })));
     }, [])
 
@@ -105,11 +105,12 @@ function Canvas() {
         const intersections = getIntersectingNodes(node);
         if (intersections.length == 0) return;
         const parent = intersections[0];
-        //if(!parent.data.acceptChildren) return;
+        if (!parent.data.acceptChildren) return;
         setNodes((nodes) => nodes.map((n) => ({
             ...n,
-            parentNode: n.id == node.id ? parent.id : '',
-            extent: n.id == node.id ? 'parent' : '',
+            parentNode: !n.parentNode && n.id == node.id ? parent.id : n.parentNode,
+            extent: n.id == node.id ? 'parent' : n.extent,
+            position: n.id == node.id ? { x: 0, y: 0 } : n.position,
             style: n.id == parent.id ? { ...nodeStyles[n.type], width: n.style.width + nodeStyles[node.type].width, height: n.style.height + nodeStyles[node.type].height } : nodeStyles[n.type],
         })));
     }, [])
