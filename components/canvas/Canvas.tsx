@@ -16,9 +16,9 @@ import '@xyflow/react/dist/style.css';
 import { sideApi } from "@/types";
 
 
-const initialNodes = [
-    { id: 'startnd', type: 'input', position: { x: 300, y: 100 }, data: { label: 'Start', acceptChildren: true }, style: { width: 200, height: 100 }, zIndex: 1 },
-    { id: 'endnd', type: 'output', position: { x: 300, y: 250 }, data: { label: 'End', acceptChildren: false }, style: {}, zIndex: 2 },
+const initialNodes: Node[] = [
+    { id: 'startnd', type: 'input', position: { x: 300, y: 100 }, data: { label: 'Start', acceptChildren: true }, style: {}, zIndex: 1 },
+    { id: 'endnd', type: 'output', position: { x: 300, y: 400 }, data: { label: 'End', acceptChildren: false }, style: {}, zIndex: 2 },
 ];
 const initialEdges: Edge[] = [];
 
@@ -30,14 +30,18 @@ const nodeTypes = {
     buy: BuyNode,
     sell: sellNode,
 }
+const parentNode: { [key: string]: boolean } = {
+    ifElse: true,
+    forLoop: true
+}
 
 const nodeStyles: { [key: string]: {} } = {
     ifElse: { border: '1px solid #777', padding: 10, backgroundColor: '#FFF', borderRadius: '5px', width: 300, height: 75, display: 'flex' },
     forLoop: { border: '1px solid #777', padding: 10, backgroundColor: '#FFF', borderRadius: '5px', width: 200, height: 75, display: 'flex' },
     print: { border: '1px solid #777', padding: 10, backgroundColor: '#FFF', borderRadius: '5px', width: 200, height: 75, display: 'flex' },
     endNode: { border: '1px solid #777', padding: 10, backgroundColor: '#FFF', borderRadius: '5px', width: 200, height: 75, display: 'flex' },
-    buy: { border: '1px solid #777', padding: 10, backgroundColor: '#FFF', borderRadius: '5px', width: 200, height: 75, display: 'flex' },
-    sell: { border: '1px solid #777', padding: 10, backgroundColor: '#FFF', borderRadius: '5px', width: 200, height: 75, display: 'flex' },
+    buy: { border: '1px solid #777', padding: 10, backgroundColor: '#FFF', borderRadius: '5px', width: 100, height: 50, display: 'flex' },
+    sell: { border: '1px solid #777', padding: 10, backgroundColor: '#FFF', borderRadius: '5px', width: 100, height: 50, display: 'flex' },
 
 }
 
@@ -58,7 +62,6 @@ function Canvas() {
             }
             return n
         }))
-        console.log(nodes);
     }
     const getPosition = (nodeId: string | null) => {
         return nodes.find((node) => node.id == nodeId)?.position
@@ -72,12 +75,13 @@ function Canvas() {
 
 
     const addNode = (type: string) => {
+        console.log(type, parentNode[type]);
         setNodes([...nodes, {
             id: type + countId++,
             type: type,
             position: { x: 200, y: 200 },
-            data: { label: "1" },
-            style: nodeStyles[type]
+            data: { label: "1", acceptChildren: parentNode[type] },
+            style: nodeStyles[type],
         }]);
     }
 
@@ -105,13 +109,17 @@ function Canvas() {
         const intersections = getIntersectingNodes(node);
         if (intersections.length == 0) return;
         const parent = intersections[0];
+        const height = parent.style?.height as number;
+        console.log(parent);
         if (!parent.data.acceptChildren) return;
         setNodes((nodes) => nodes.map((n) => ({
             ...n,
+            data: n.id == parent.id ? { ...n.data, child: n.id } : n.data,
             parentNode: !n.parentNode && n.id == node.id ? parent.id : n.parentNode,
             extent: n.id == node.id ? 'parent' : n.extent,
-            position: n.id == node.id ? { x: 0, y: 0 } : n.position,
-            style: n.id == parent.id ? { ...nodeStyles[n.type], width: n.style.width + nodeStyles[node.type].width, height: n.style.height + nodeStyles[node.type].height } : nodeStyles[n.type],
+            position: n.id == node.id ? { x: 0, y: height } : n.position,
+            draggable: n.id == node.id ? false : n.draggable,
+            style: n.id == parent.id ? { ...nodeStyles[n.type], width: n.style?.width + nodeStyles[node.type].width, height: n.style.height + nodeStyles[node.type].height } : nodeStyles[n.type],
         })));
     }, [])
 

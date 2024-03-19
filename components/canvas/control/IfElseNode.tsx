@@ -44,7 +44,7 @@ const initialCondition: Condition = {
     right: "ma21",
 }
 
-function IfElseNode({ data, targetPosition, sourcePosition }: NodeProps) {
+function IfElseNode({ data }: NodeProps) {
     const id = useNodeId();
     const api = useContext(ApiContext);
     const [condition, setCondition] = useState<Condition>(initialCondition);
@@ -53,9 +53,10 @@ function IfElseNode({ data, targetPosition, sourcePosition }: NodeProps) {
 
     useEffect(() => {
         api.updateNodes(id, {
+            ...data,
             condition: condition,
         });
-    }, [condition.left, condition.operator, condition.right])
+    }, [condition.left, condition.operator, condition.right, data])
 
     const onConnect = () => {
         console.log("connect");
