@@ -66,7 +66,7 @@ function generateCode(nodes: Node[], edges: Edge[]) {
 
         // Find outgoing edges from current node
         const outgoingEdges = edges.filter(edge => edge.source === currentNode.id);
-
+        //TODO: Also find child and prioritize them as next node to navigate to
         // Recursively navigate connected nodes
         for (const edge of outgoingEdges) {
             const targetNode = nodes.find(n => n.id === edge.target);
