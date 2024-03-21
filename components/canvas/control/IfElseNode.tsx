@@ -48,7 +48,7 @@ function IfElseNode({ data }: NodeProps) {
     const id = useNodeId();
     const api = useContext(ApiContext);
     const [condition, setCondition] = useState<Condition>(initialCondition);
-    const child = data.child;
+    const child = data.child || {};
 
 
     useEffect(() => {
@@ -56,7 +56,7 @@ function IfElseNode({ data }: NodeProps) {
             ...data,
             condition: condition,
         });
-    }, [condition.left, condition.operator, condition.right, data])
+    }, [child.left, child.operator, child.right, data])
 
     const onConnect = () => {
         console.log("connect");
@@ -93,10 +93,7 @@ function IfElseNode({ data }: NodeProps) {
             <p>If</p>
             {/*TODO: select options should be defined by the parent*/}
             {/*TODO: find a way to handle duration of moving average*/}
-            {child || <select onChange={(e) => handleChange(e, "pre")} value={condition.left} className="border">
-                <option value="ma">Moving Average</option>
-                <option value="rsi">RSI</option>
-            </select>}
+            {child?.left || <div className="border border-black w-14 h-8"></div>}
             {/*TODO: create json file with operators and indicators*/}
             <select onChange={(e) => handleChange(e, "oper")} value={condition.operator} className="border">
                 <option value=">">{">"}</option>

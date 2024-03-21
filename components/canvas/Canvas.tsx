@@ -11,6 +11,7 @@ import IfElseNode from "./control/IfElseNode";
 import PrintNode from "./control/PrintNode";
 import sellNode from '@/components/canvas/order/SellNode';
 import BuyNode from "./order/BuyNode";
+import Indicators from "./Indicators";
 
 import '@xyflow/react/dist/style.css';
 import { sideApi } from "@/types";
@@ -29,10 +30,15 @@ const nodeTypes = {
     endNode: EndNode,
     buy: BuyNode,
     sell: sellNode,
+    indicator: Indicators,
 }
 const parentNode: { [key: string]: boolean } = {
     ifElse: true,
-    forLoop: true
+    forLoop: true,
+}
+//TODO: should probably hold all informations in the end
+const nodeData = {
+    ifElse: { slot: { x: 0, y: 50 } }
 }
 
 const nodeStyles: { [key: string]: {} } = {
@@ -42,6 +48,7 @@ const nodeStyles: { [key: string]: {} } = {
     endNode: { border: '1px solid #777', padding: 10, backgroundColor: '#FFF', borderRadius: '5px', width: 200, height: 75, display: 'flex' },
     buy: { border: '1px solid #777', padding: 10, backgroundColor: '#FFF', borderRadius: '5px', width: 100, height: 50, display: 'flex' },
     sell: { border: '1px solid #777', padding: 10, backgroundColor: '#FFF', borderRadius: '5px', width: 100, height: 50, display: 'flex' },
+    indicator: { border: '1px solid #777', padding: 10, backgroundColor: '#FFF', borderRadius: '5px', width: 170, height: 50, display: 'flex' },
 
 }
 
@@ -63,6 +70,9 @@ function Canvas() {
             return n
         }))
     }
+    useEffect(() => {
+        console.log(nodes);
+    }, [nodes])
     const getPosition = (nodeId: string | null) => {
         return nodes.find((node) => node.id == nodeId)?.position
     }
@@ -114,12 +124,13 @@ function Canvas() {
         if (!parent.data.acceptChildren) return;
         setNodes((nodes) => nodes.map((n) => ({
             ...n,
-            data: n.id == parent.id ? { ...n.data, child: n.id } : n.data,
+            data: n.id == parent.id ? { ...n.data, child: { left: node.data.indicator } } : n.data,
             parentNode: !n.parentNode && n.id == node.id ? parent.id : n.parentNode,
             extent: n.id == node.id ? 'parent' : n.extent,
-            position: n.id == node.id ? { x: 0, y: height } : n.position,
+            position: n.id == node.id ? nodeData['ifElse']?.slot : n.position,
             draggable: n.id == node.id ? false : n.draggable,
-            style: n.id == parent.id ? { ...nodeStyles[n.type], width: n.style?.width + nodeStyles[node.type].width, height: n.style.height + nodeStyles[node.type].height } : nodeStyles[n.type],
+            //style: n.id == parent.id ? { ...nodeStyles[n.type], width: n.style?.width + nodeStyles[node.type].width, height: n.style.height + nodeStyles[node.type].height } : nodeStyles[n.type],
+            zIndex: n.id == node.id ? Number.MAX_SAFE_INTEGER : 0,
         })));
     }, [])
 

@@ -27,6 +27,11 @@ export default function Sidebar({ api }: { api: sideApi }) {
             </button>
             <button
                 className='text-white mx-2 rounded-md px-2 py-2 bg-green-500'
+                onClick={() => addNode('indicator')}>
+                Add Indicator node
+            </button>
+            <button
+                className='text-white mx-2 rounded-md px-2 py-2 bg-green-500'
                 onClick={() => addNode('buy')}>
                 Add Buy node
             </button>
