@@ -1,3 +1,5 @@
+'use client'
+
 import { Background, BackgroundVariant, Connection, Controls, Edge, MiniMap, ReactFlow, addEdge, useEdgesState, useNodesState, useReactFlow, Node } from "@xyflow/react";
 import { useCallback, useEffect, useState } from "react";
 
@@ -15,6 +17,9 @@ import Indicators from "./Indicators";
 
 import '@xyflow/react/dist/style.css';
 import { sideApi } from "@/types";
+import StoreProvider from "@/app/storeProvider";
+import { useAppDispatch, useAppSelector, useAppStore } from "@/lib/features/hooks";
+import { addChild } from "../../lib/features/nodeDataSlice";
 
 
 const initialNodes: Node[] = [
@@ -35,10 +40,6 @@ const nodeTypes = {
 const parentNode: { [key: string]: boolean } = {
     ifElse: true,
     forLoop: true,
-}
-//TODO: should probably hold all informations in the end
-const nodeData = {
-    ifElse: { slot: { x: 0, y: 50 } }
 }
 
 const nodeStyles: { [key: string]: {} } = {
@@ -61,6 +62,9 @@ function Canvas() {
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
     const [selected, setSelected] = useState<Node | null>(null);
     const { getIntersectingNodes } = useReactFlow();
+    const store = useAppStore();
+    const childs = useAppSelector(state => state.nodeData.childs);
+    const dispatch = useAppDispatch();
 
     const updateNodes = (nodeId: string | null, data: any) => {
         setNodes(nodes.map((n) => {
@@ -71,8 +75,9 @@ function Canvas() {
         }))
     }
     useEffect(() => {
-        console.log(nodes);
-    }, [nodes])
+        console.log(store);
+    }, [store])
+
     const getPosition = (nodeId: string | null) => {
         return nodes.find((node) => node.id == nodeId)?.position
     }
@@ -85,7 +90,6 @@ function Canvas() {
 
 
     const addNode = (type: string) => {
-        console.log(type, parentNode[type]);
         setNodes([...nodes, {
             id: type + countId++,
             type: type,
@@ -117,17 +121,21 @@ function Canvas() {
 
     const onNodeDragStop = useCallback((e: React.MouseEvent<Element, MouseEvent>, node: Node) => {
         const intersections = getIntersectingNodes(node);
+        //if there is no intersections, return
         if (intersections.length == 0) return;
+
         const parent = intersections[0];
-        const height = parent.style?.height as number;
-        console.log(parent);
+        //if parent does not accept children, return
         if (!parent.data.acceptChildren) return;
+
+        dispatch(addChild(node.id));
+        const height = parent.style?.height as number;
         setNodes((nodes) => nodes.map((n) => ({
             ...n,
             data: n.id == parent.id ? { ...n.data, child: { left: node.data.indicator } } : n.data,
             parentNode: !n.parentNode && n.id == node.id ? parent.id : n.parentNode,
             extent: n.id == node.id ? 'parent' : n.extent,
-            position: n.id == node.id ? nodeData['ifElse']?.slot : n.position,
+            position: n.id == node.id ? { x: 0, y: 0 } : n.position,
             draggable: n.id == node.id ? false : n.draggable,
             //style: n.id == parent.id ? { ...nodeStyles[n.type], width: n.style?.width + nodeStyles[node.type].width, height: n.style.height + nodeStyles[node.type].height } : nodeStyles[n.type],
             zIndex: n.id == node.id ? Number.MAX_SAFE_INTEGER : 0,

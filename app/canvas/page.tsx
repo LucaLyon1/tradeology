@@ -2,12 +2,15 @@
 
 import Canvas from "@/components/canvas/Canvas"
 import { ReactFlowProvider } from "@xyflow/react"
+import StoreProvider from "../storeProvider"
 
 function Page() {
 
     return (
         <ReactFlowProvider>
-            <Canvas />
+            <StoreProvider>
+                <Canvas />
+            </StoreProvider>
         </ReactFlowProvider>
     )
 }
